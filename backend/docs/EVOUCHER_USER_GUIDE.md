@@ -38,6 +38,9 @@ Returns the created year object with its `id`. Note this `id` for voucher creati
 **Endpoint**: `POST /api/v1/evoucher/admin/vouchers`
 
 Generates a batch of vouchers with secure 6-digit PINs.
+Before you set up a voucher for a new system for particular year, make sure these are seup as t
+1. overall vouchers for that year./api/v1/evoucher/admin/vouchers
+2. 
 
 **Request**:
 ```json
