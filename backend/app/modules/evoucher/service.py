@@ -92,7 +92,8 @@ class EVoucherService:
         return EVoucherSessionResponse(
             valid=True, 
             voucher_session_token=session_token,
-            expires_at=now + timedelta(minutes=RESERVATION_TTL_MINUTES)
+            expires_at=now + timedelta(minutes=RESERVATION_TTL_MINUTES),
+            academic_year_id=voucher.academic_year_id
         )
 
     @staticmethod
@@ -113,13 +114,21 @@ class EVoucherService:
             return EVoucherSessionResponse(valid=False, reason=VoucherAttemptResult.NOT_FOUND)
         
         now = datetime.utcnow()
-        if voucher.reserved_at + timedelta(minutes=RESERVATION_TTL_MINUTES) < now:
+        expires_at = voucher.reserved_at + timedelta(minutes=RESERVATION_TTL_MINUTES)
+        if expires_at < now:
             # Session expired
             voucher.status = VoucherStatus.UNUSED
             voucher.reserved_at = None
             voucher.reserved_session_id = None
             db.commit()
             return EVoucherSessionResponse(valid=False, reason=VoucherAttemptResult.EXPIRED)
+        
+        return EVoucherSessionResponse(
+            valid=True,
+            voucher_session_token=session_token,
+            expires_at=expires_at,
+            academic_year_id=voucher.academic_year_id
+        )
             
     @staticmethod
     def cleanup_expired_reservations(db: Session) -> int:

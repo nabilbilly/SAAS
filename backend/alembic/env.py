@@ -16,8 +16,11 @@ from app.db.base import Base
 from app.shared.models.user import User
 from app.shared.models.role import Role
 from app.shared.models.school import School
-from app.modules.academics.models import AcademicYear
+from app.modules.academics.models import AcademicYear, Term, ClassRoom, Stream
 from app.modules.evoucher.models import EVoucher, VoucherAttemptLog
+from app.modules.students.models import Student, Guardian, StudentMedical, StudentAccount
+from app.modules.admissions.models import Admission
+from app.shared.models.audit import AuditLog
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.

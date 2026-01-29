@@ -32,6 +32,7 @@ class EVoucherSessionResponse(BaseModel):
     voucher_session_token: Optional[str] = None
     reason: Optional[VoucherAttemptResult] = None
     expires_at: Optional[datetime] = None
+    academic_year_id: Optional[int] = None
 
 class VoucherSessionCheck(BaseModel):
     voucher_session_token: str

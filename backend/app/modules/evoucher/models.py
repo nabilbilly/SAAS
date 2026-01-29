@@ -1,4 +1,5 @@
 from sqlalchemy import Column, Integer, String, Enum as SqlEnum, DateTime, ForeignKey, Index
+from sqlalchemy.orm import relationship
 import enum
 from datetime import datetime
 from app.db.base import Base
@@ -30,10 +31,14 @@ class EVoucher(Base):
     reserved_session_id = Column(String, nullable=True, index=True)
     
     used_at = Column(DateTime, nullable=True)
-    used_by_student_id = Column(Integer, nullable=True) # FK to student later
+    used_by_student_id = Column(Integer, ForeignKey("student.id"), nullable=True)
     
     created_at = Column(DateTime, default=datetime.utcnow)
-    created_by_admin_id = Column(Integer, nullable=True) # FK to user later
+    created_by_admin_id = Column(Integer, nullable=True) # Will link to user later
+    
+    academic_year = relationship("AcademicYear")
+    used_by_student = relationship("Student")
+    admission = relationship("Admission", back_populates="voucher", uselist=False)
 
 class VoucherAttemptLog(Base):
     id = Column(Integer, primary_key=True, index=True)
