@@ -121,6 +121,7 @@ class StudentResponse(StudentBase):
     stream_id: Optional[int] = None
     ghana_card: Optional[str] = None
     disability_status: Optional[str] = None
+    pending_admission_id: Optional[int] = None
 
     class Config:
         from_attributes = True

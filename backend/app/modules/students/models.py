@@ -4,6 +4,7 @@ import enum
 from typing import Optional
 from datetime import datetime
 from app.db.base import Base
+from ..admissions.models import AdmissionStatus
 
 class Gender(str, enum.Enum):
     MALE = "Male"
@@ -61,13 +62,19 @@ class Student(Base):
     def status(self) -> str:
         if not self.admissions: return "Inactive"
         # Check if there's any approved admission
-        has_approved = any(a.status == "APPROVED" for a in self.admissions)
+        has_approved = any(a.status == AdmissionStatus.APPROVED for a in self.admissions)
         if has_approved:
             return "Active"
         # Check for pending
-        if any(a.status == "PENDING" for a in self.admissions):
+        if any(a.status == AdmissionStatus.PENDING for a in self.admissions):
             return "Pending Approval"
         return "Inactive"
+
+    @property
+    def pending_admission_id(self) -> Optional[int]:
+        if not self.admissions: return None
+        pending = next((a for a in self.admissions if a.status == AdmissionStatus.PENDING), None)
+        return pending.id if pending else None
 
     @property
     def admission_year(self) -> str:
