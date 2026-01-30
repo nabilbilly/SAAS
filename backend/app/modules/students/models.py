@@ -1,6 +1,7 @@
 from sqlalchemy import Column, Integer, String, Date, Enum as SqlEnum, ForeignKey, DateTime, Boolean, Text
 from sqlalchemy.orm import relationship
 import enum
+from typing import Optional
 from datetime import datetime
 from app.db.base import Base
 
@@ -26,6 +27,54 @@ class Student(Base):
     medical = relationship("StudentMedical", back_populates="student", uselist=False, cascade="all, delete-orphan")
     account = relationship("StudentAccount", back_populates="student", uselist=False, cascade="all, delete-orphan")
     admissions = relationship("Admission", back_populates="student")
+
+    @property
+    def current_class(self) -> str:
+        # Get latest approved admission
+        if not self.admissions: return "N/A"
+        latest_adm = next((a for a in sorted(self.admissions, key=lambda x: x.created_at, reverse=True) 
+                          if a.status == "APPROVED"), None)
+        return latest_adm.class_room.name if latest_adm else "N/A"
+
+    @property
+    def class_id(self) -> Optional[int]:
+        if not self.admissions: return None
+        latest_adm = next((a for a in sorted(self.admissions, key=lambda x: x.created_at, reverse=True) 
+                          if a.status == "APPROVED"), None)
+        return latest_adm.class_id if latest_adm else None
+
+    @property
+    def stream_id(self) -> Optional[int]:
+        if not self.admissions: return None
+        latest_adm = next((a for a in sorted(self.admissions, key=lambda x: x.created_at, reverse=True) 
+                          if a.status == "APPROVED"), None)
+        return latest_adm.stream_id if latest_adm else None
+
+    @property
+    def current_stream(self) -> str:
+        if not self.admissions: return "N/A"
+        latest_adm = next((a for a in sorted(self.admissions, key=lambda x: x.created_at, reverse=True) 
+                          if a.status == "APPROVED"), None)
+        return latest_adm.stream.name if latest_adm and latest_adm.stream else "N/A"
+
+    @property
+    def status(self) -> str:
+        if not self.admissions: return "Inactive"
+        # Check if there's any approved admission
+        has_approved = any(a.status == "APPROVED" for a in self.admissions)
+        if has_approved:
+            return "Active"
+        # Check for pending
+        if any(a.status == "PENDING" for a in self.admissions):
+            return "Pending Approval"
+        return "Inactive"
+
+    @property
+    def admission_year(self) -> str:
+        if not self.admissions: return "N/A"
+        latest_adm = next((a for a in sorted(self.admissions, key=lambda x: x.created_at, reverse=True) 
+                          if a.status == "APPROVED"), None)
+        return latest_adm.academic_year_name if latest_adm else "N/A"
 
 class Guardian(Base):
     id = Column(Integer, primary_key=True, index=True)

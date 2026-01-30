@@ -260,7 +260,8 @@ def create_class(
 def list_classes(
     db: Session = Depends(get_db)
 ):
-    return db.query(models.ClassRoom).all()
+    from sqlalchemy.orm import joinedload
+    return db.query(models.ClassRoom).options(joinedload(models.ClassRoom.streams)).all()
 
 @router.post("/streams", response_model=schemas.StreamResponse)
 def create_stream(

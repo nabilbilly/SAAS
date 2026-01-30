@@ -6,9 +6,9 @@ from datetime import datetime
 from app.db.base import Base
 
 class AdmissionStatus(str, enum.Enum):
-    PENDING = "Pending"
-    APPROVED = "Approved"
-    REJECTED = "Rejected"
+    PENDING = "PENDING"
+    APPROVED = "APPROVED"
+    REJECTED = "REJECTED"
 
 class Admission(Base):
     id = Column(Integer, primary_key=True, index=True)

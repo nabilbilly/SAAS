@@ -1,8 +1,14 @@
-from fastapi import APIRouter, Depends, HTTPException
-from sqlalchemy.orm import Session
-from typing import List
+from fastapi import APIRouter, Depends, HTTPException, Query
+from sqlalchemy.orm import Session, selectinload, aliased
+from typing import List, Optional
 from app.db.session import get_db
-from . import schemas, service
+from . import schemas, service, models
+from .models import Admission, AdmissionStatus
+from app.modules.students.models import Student
+from app.modules.evoucher.models import EVoucher
+from datetime import datetime
+import traceback
+import sys
 
 router = APIRouter()
 
@@ -36,33 +42,60 @@ def approve_admission(
 
 @router.get("/", response_model=List[schemas.AdmissionResponse])
 def list_admissions(
-    status: str = None,
-    class_id: int = None,
-    academic_year_id: int = None,
-    term_id: int = None,
-    search: str = None,
+    status: Optional[str] = Query(None),
+    class_id: int = Query(None),
+    academic_year_id: int = Query(None),
+    term_id: int = Query(None),
+    search: str = Query(None),
     db: Session = Depends(get_db)
 ):
-    query = db.query(service.Admission).join(service.Admission.student)
-    
-    if status:
-        query = query.filter(service.Admission.status == status)
-    if class_id:
-        query = query.filter(service.Admission.class_id == class_id)
-    if academic_year_id:
-        query = query.filter(service.Admission.academic_year_id == academic_year_id)
-    if term_id:
-        query = query.filter(service.Admission.term_id == term_id)
-    if search:
-        search_filter = f"%{search}%"
-        # Search by student name or voucher number
-        query = query.join(service.Admission.voucher).filter(
-            (service.Student.first_name.ilike(search_filter)) |
-            (service.Student.last_name.ilike(search_filter)) |
-            (service.EVoucher.voucher_number.ilike(search_filter))
+    try:
+        # Using an alias 'adm' and selectinload is the SAFEST way to avoid 
+        # AmbiguousColumn errors when filtering by common names like 'status'
+        adm = aliased(Admission, name='adm')
+        
+        query = db.query(adm).options(
+            selectinload(adm.student),
+            selectinload(adm.voucher),
+            selectinload(adm.class_room),
+            selectinload(adm.academic_year),
+            selectinload(adm.term),
+            selectinload(adm.stream)
         )
-    
-    return query.order_by(service.Admission.created_at.desc()).all()
+        
+        if status:
+            try:
+                # Handle case-insensitive status. Frontend sends 'Rejected', but DB now requires 'REJECTED'.
+                # We convert input to uppercase to match the AdmissionStatus Enum members.
+                status_upper = status.upper()
+                enum_status = AdmissionStatus(status_upper)
+                query = query.filter(adm.status == enum_status)
+            except ValueError:
+                # Invalid status string provided (not in PENDING, APPROVED, REJECTED)
+                return []
+            
+        if class_id:
+            query = query.filter(adm.class_id == class_id)
+        if academic_year_id:
+            query = query.filter(adm.academic_year_id == academic_year_id)
+        if term_id:
+            query = query.filter(adm.term_id == term_id)
+        
+        if search:
+            search_filter = f"%{search}%"
+            # Join required for filtering by student name or voucher number
+            query = query.join(adm.student).join(adm.voucher).filter(
+                (Student.first_name.ilike(search_filter)) |
+                (Student.last_name.ilike(search_filter)) |
+                (EVoucher.voucher_number.ilike(search_filter))
+            )
+        
+        return query.order_by(adm.created_at.desc()).all()
+    except Exception as e:
+        with open("debug_error.log", "a") as f:
+            f.write(f"\n--- Error at {datetime.now()} ---\n")
+            traceback.print_exc(file=f)
+        raise HTTPException(status_code=500, detail=str(e))
 
 @router.post("/{admission_id}/reject", response_model=schemas.AdmissionResponse)
 def reject_admission(
@@ -80,7 +113,7 @@ def get_admission(
     admission_id: int,
     db: Session = Depends(get_db)
 ):
-    admission = db.query(service.Admission).filter(service.Admission.id == admission_id).first()
+    admission = db.query(Admission).filter(Admission.id == admission_id).first()
     if not admission:
         raise HTTPException(status_code=404, detail="Admission not found")
     return admission

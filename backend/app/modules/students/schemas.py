@@ -101,6 +101,8 @@ class StudentUpdate(BaseModel):
     city: Optional[str] = None
     photo: Optional[str] = None
     index_number: Optional[str] = None
+    class_id: Optional[int] = None
+    stream_id: Optional[int] = None
 
 class StudentResponse(StudentBase):
     id: int
@@ -109,6 +111,16 @@ class StudentResponse(StudentBase):
     guardians: List[GuardianResponse] = []
     medical: Optional[StudentMedicalResponse] = None
     account: Optional[StudentAccountResponse] = None
+    
+    # Dynamic fields from relationship/property
+    current_class: Optional[str] = "N/A"
+    current_stream: Optional[str] = "N/A"
+    status: str = "Active"
+    admission_year: Optional[str] = "N/A"
+    class_id: Optional[int] = None
+    stream_id: Optional[int] = None
+    ghana_card: Optional[str] = None
+    disability_status: Optional[str] = None
 
     class Config:
         from_attributes = True

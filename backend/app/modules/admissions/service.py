@@ -129,8 +129,8 @@ class AdmissionsService:
         if not admission:
             raise HTTPException(status_code=404, detail="Admission record not found")
         
-        if admission.status != AdmissionStatus.PENDING:
-            raise HTTPException(status_code=400, detail="Admission is already processed")
+        if admission.status not in [AdmissionStatus.PENDING, AdmissionStatus.REJECTED]:
+            raise HTTPException(status_code=400, detail="Admission is already processed (Approved)")
 
         try:
             # 1. Update Admission status
