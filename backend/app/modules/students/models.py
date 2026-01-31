@@ -22,6 +22,8 @@ class Student(Base):
     address = Column(Text, nullable=True)
     city = Column(String, nullable=True)
     photo = Column(String, nullable=True) # File path
+    ghana_card = Column(String, nullable=True)
+    disability_status = Column(String, nullable=True)
     created_at = Column(DateTime, default=datetime.utcnow)
 
     guardians = relationship("Guardian", back_populates="student", cascade="all, delete-orphan")

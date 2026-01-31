@@ -25,7 +25,7 @@ def upgrade() -> None:
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('academic_year_id', sa.Integer(), nullable=False),
     sa.Column('name', sa.String(), nullable=False),
-    sa.Column('status', sa.Enum('DRAFT', 'ACTIVE', 'CLOSED', name='termstatus'), nullable=True),
+    sa.Column('status', sa.Enum('Draft', 'Active', 'Closed', name='termstatus'), nullable=True),
     sa.Column('sequence', sa.Integer(), nullable=True),
     sa.Column('start_date', sa.Date(), nullable=True),
     sa.Column('end_date', sa.Date(), nullable=True),

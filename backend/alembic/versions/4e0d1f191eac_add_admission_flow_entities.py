@@ -48,10 +48,12 @@ def upgrade() -> None:
     sa.Column('first_name', sa.String(), nullable=False),
     sa.Column('middle_name', sa.String(), nullable=True),
     sa.Column('last_name', sa.String(), nullable=False),
-    sa.Column('gender', sa.Enum('MALE', 'FEMALE', name='gender'), nullable=False),
+    sa.Column('gender', sa.Enum('Male', 'Female', name='gender'), nullable=False),
     sa.Column('date_of_birth', sa.Date(), nullable=False),
     sa.Column('nationality', sa.String(), nullable=False),
     sa.Column('photo', sa.String(), nullable=True),
+    sa.Column('ghana_card', sa.String(), nullable=True),
+    sa.Column('disability_status', sa.String(), nullable=True),
     sa.Column('created_at', sa.DateTime(), nullable=True),
     sa.PrimaryKeyConstraint('id')
     )
@@ -107,7 +109,7 @@ def upgrade() -> None:
     sa.Column('stream_id', sa.Integer(), nullable=True),
     sa.Column('term_id', sa.Integer(), nullable=False),
     sa.Column('voucher_id', sa.Integer(), nullable=False),
-    sa.Column('status', sa.Enum('PENDING', 'APPROVED', name='admissionstatus'), nullable=True),
+    sa.Column('status', sa.Enum('PENDING', 'APPROVED', 'REJECTED', name='admissionstatus'), nullable=True),
     sa.Column('approved_by_admin_id', sa.Integer(), nullable=True),
     sa.Column('approved_at', sa.DateTime(), nullable=True),
     sa.Column('created_at', sa.DateTime(), nullable=True),
