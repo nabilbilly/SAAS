@@ -16,7 +16,7 @@ class Settings(BaseSettings):
     PORT: int = 8001
     
     # CORS
-    BACKEND_CORS_ORIGINS: list[str] = ["http://localhost:5173", "http://localhost:3000", "https://saas-production-047e.up.railway.app", "https://saas-production-047e.up.railway.app/api/v1"]
+    BACKEND_CORS_ORIGINS: list[str] = ["http://localhost:5173", "http://localhost:3000", "https://saas-production-aaeb.up.railway.app", "https://saas-production-aaeb.up.railway.app/api/v1"]
 
     @field_validator("BACKEND_CORS_ORIGINS", mode="before")
     @classmethod
