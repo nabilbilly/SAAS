@@ -2,7 +2,7 @@ import schoolImg12 from '../../assets/schoolimg12.jpg';
 import schoolImg13 from '../../assets/schoolimg13.webp';
 import schoolImg14 from '../../assets/schoolimg14.webp';
 import schoolImg15 from '../../assets/schoolimg15.webp';
-import schoolImg16 from '../../assets/schoolimg16.webp';
+import schoolImg16 from '../../assets/schoolimg23.webp';
 import schoolImg17 from '../../assets/schoolimg17.webp';
 
 export const StudentLifeGallery = () => {
