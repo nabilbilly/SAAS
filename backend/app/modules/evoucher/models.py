@@ -2,7 +2,7 @@ from sqlalchemy import Column, Integer, String, Enum as SqlEnum, DateTime, Forei
 from sqlalchemy.orm import relationship
 import enum
 from datetime import datetime
-from app.db.base import Base
+from app.db.base_class import Base
 
 class VoucherStatus(str, enum.Enum):
     UNUSED = "Unused"

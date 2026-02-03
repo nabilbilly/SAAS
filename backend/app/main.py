@@ -1,6 +1,8 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from app.core.config import settings
+from app.db import base # noqa
+from app.db.session import get_db
 from app.api import api_router
 
 app = FastAPI(

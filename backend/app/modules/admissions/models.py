@@ -3,7 +3,7 @@ from sqlalchemy.orm import relationship
 import enum
 from typing import Optional
 from datetime import datetime
-from app.db.base import Base
+from app.db.base_class import Base
 
 class AdmissionStatus(str, enum.Enum):
     PENDING = "PENDING"

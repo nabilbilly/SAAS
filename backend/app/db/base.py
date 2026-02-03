@@ -1,12 +1,9 @@
-from sqlalchemy.ext.declarative import as_declarative, declared_attr
-from typing import Any
-
-@as_declarative()
-class Base:
-    id: Any
-    __name__: str
-
-    # Generate __tablename__ automatically
-    @declared_attr
-    def __tablename__(cls) -> str:
-        return cls.__name__.lower()
+from app.db.base_class import Base # noqa
+from app.shared.models.user import User # noqa
+from app.shared.models.role import Role # noqa
+from app.shared.models.school import School # noqa
+from app.modules.academics.models import AcademicYear, Term, ClassRoom, Stream # noqa
+from app.modules.evoucher.models import EVoucher, VoucherAttemptLog # noqa
+from app.modules.students.models import Student, Guardian, StudentMedical, StudentAccount # noqa
+from app.modules.admissions.models import Admission # noqa
+from app.shared.models.audit import AuditLog # noqa

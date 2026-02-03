@@ -1,5 +1,5 @@
 from sqlalchemy import Column, Integer, String, JSON
-from app.db.base import Base
+from app.db.base_class import Base
 
 class School(Base):
     id = Column(Integer, primary_key=True, index=True)

@@ -1,7 +1,7 @@
 from sqlalchemy import Column, Integer, String, Date, Enum as SqlEnum, ForeignKey, Index
 from sqlalchemy.orm import relationship
 import enum
-from app.db.base import Base
+from app.db.base_class import Base
 
 class YearStatus(str, enum.Enum):
     ACTIVE = "Active"
