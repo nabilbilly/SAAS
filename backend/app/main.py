@@ -4,6 +4,7 @@ from app.core.config import settings
 from app.db import base # noqa
 from app.db.session import get_db
 from app.api import api_router
+import json
 
 app = FastAPI(
     title=settings.PROJECT_NAME,
