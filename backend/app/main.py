@@ -18,12 +18,12 @@ async def log_origin_middleware(request: Request, call_next):
         print(f"Incoming Request Origin: {origin}")
     response = await call_next(request)
     return response
-
+origins = json.loads(settings.BACKEND_CORS_ORIGINS)
 # Set all CORS enabled origins
 app.add_middleware(
     CORSMiddleware,
-    allow_origin_regex=r"^https://.*\.up\.railway\.app$",
-    allow_origins=[str(origin) for origin in settings.BACKEND_CORS_ORIGINS],
+    allow_origins=origins,
+    # allow_origins=[str(origin) for origin in settings.BACKEND_CORS_ORIGINS],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
