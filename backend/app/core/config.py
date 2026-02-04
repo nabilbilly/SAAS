@@ -19,7 +19,7 @@ class Settings(BaseSettings):
     BACKEND_CORS_ORIGINS: list[str] = [
         "http://localhost:5173",
         "http://localhost:3000",
-        "https://saas-production-aaeb.up.railway.app"
+        "https://saas-production-aaeb.up.railway.app/"
     ]
 
     @field_validator("BACKEND_CORS_ORIGINS", mode="before")
