@@ -1,26 +1,24 @@
 from pydantic_settings import BaseSettings
 from pydantic import field_validator
 from typing import Optional
+import os
+from dotenv import load_dotenv
+
 
 class Settings(BaseSettings):
     PROJECT_NAME: str = "cschool Backend"
     API_V1_STR: str = "/api/v1"
     
     # Database
-    POSTGRES_USER: str = "postgres"
-    POSTGRES_PASSWORD: str = "123"
-    POSTGRES_SERVER: str = "localhost"
-    POSTGRES_PORT: str = "5432"
-    POSTGRES_DB: str = "cschool_db"
     DATABASE_URL: Optional[str] = None
     PORT: int = 8001
     
     # CORS
     BACKEND_CORS_ORIGINS: list[str] = [
         "https://saas-production-aaeb.up.railway.app",
-        # "https://confident-celebration-production.up.railway.app",
-        # "http://localhost:5173",
-        # "http://localhost:3000",
+        "https://confident-celebration-production.up.railway.app",
+        "http://localhost:5173",
+        "http://localhost:3000",
     ]
 
     @field_validator("BACKEND_CORS_ORIGINS", mode="before")
@@ -43,12 +41,15 @@ class Settings(BaseSettings):
     @property
     def sqlalchemy_database_uri(self) -> str:
         if self.DATABASE_URL:
+            # Handle Railway/Heroku old postgres:// schema
             if self.DATABASE_URL.startswith("postgres://"):
                 return self.DATABASE_URL.replace("postgres://", "postgresql://", 1)
             return self.DATABASE_URL
-        return f"postgresql://{self.POSTGRES_USER}:{self.POSTGRES_PASSWORD}@{self.POSTGRES_SERVER}:{self.POSTGRES_PORT}/{self.POSTGRES_DB}"
+        # Fallback for local development if DATABASE_URL is missing
+        return "postgresql://postgres:123@localhost:5432/cschool_db"
 
     class Config:
         env_file = ".env"
+        case_sensitive = True
 
 settings = Settings()
