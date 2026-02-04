@@ -17,9 +17,9 @@ class Settings(BaseSettings):
     
     # CORS
     BACKEND_CORS_ORIGINS: list[str] = [
+        "https://saas-production-aaeb.up.railway.app",
         "http://localhost:5173",
         "http://localhost:3000",
-        "https://saas-production-aaeb.up.railway.app",
         "https://confident-celebration-production.up.railway.app"
     ]
 
